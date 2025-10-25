@@ -13,7 +13,7 @@ source:
   sha256: 0007e8d60d2fe78deb4481d46f4a6a2f1b6595180cb93bbfebdbd5e32fc64c0a
 
 build:
-  number: 0
+  number: 1
   skip:
     # FIXME: Get osx builds working
     - not linux
