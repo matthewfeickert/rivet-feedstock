@@ -43,12 +43,16 @@ requirements:
     - hepmc3 >=3.2.6,<3.3.0
     - yoda <2
     - fastjet-contrib
+    # FIXME: Determine change in FastJet API in v3.5.0+ and create patch
+    - fastjet-cxx <3.5.0
     - cython
   run:
     - python
     - hepmc3 >=3.2.6,<3.3.0
     - yoda <2
     - fastjet-contrib
+    # FIXME: Determine change in FastJet API in v3.5.0+ and create patch
+    - fastjet-cxx <3.5.0
     - hdf5
     - highfive
     - matplotlib-base
