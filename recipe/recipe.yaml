@@ -45,6 +45,8 @@ requirements:
     # FIXME: Determine change in FastJet API in v3.5.0+ and create patch
     - fastjet-cxx <3.5.0
     - cython
+    - hdf5
+    - highfive
   run:
     - python
     - hepmc3 >=3.2.6,<3.3.0
