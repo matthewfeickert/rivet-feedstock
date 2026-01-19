@@ -1,19 +1,18 @@
 schema_version: 1
 
 context:
-  name: rivet
-  version: 3.1.11
+  version: "4.0.0"
 
 package:
-  name: ${{ name|lower }}
+  name: rivet
   version: ${{ version }}
 
 source:
   url: https://gitlab.com/hepcedar/rivet/-/archive/rivet-${{ version }}/rivet-rivet-${{ version }}.tar.gz
-  sha256: 0007e8d60d2fe78deb4481d46f4a6a2f1b6595180cb93bbfebdbd5e32fc64c0a
+  sha256: d34fe9a20d59a0120495f5633ef6fdabbe45622e6566ea475a277b9a14b32ab9
 
 build:
-  number: 1
+  number: 0
   skip:
     # FIXME: Get osx builds working
     - not linux
@@ -41,7 +40,7 @@ requirements:
   host:
     - python
     - hepmc3 >=3.2.6,<3.3.0
-    - yoda <2
+    - yoda >=2.0.0
     - fastjet-contrib
     # FIXME: Determine change in FastJet API in v3.5.0+ and create patch
     - fastjet-cxx <3.5.0
@@ -49,7 +48,7 @@ requirements:
   run:
     - python
     - hepmc3 >=3.2.6,<3.3.0
-    - yoda <2
+    - yoda >=2.0.0
     - fastjet-contrib
     # FIXME: Determine change in FastJet API in v3.5.0+ and create patch
     - fastjet-cxx <3.5.0
