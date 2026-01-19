@@ -19,6 +19,8 @@ autoreconf --install --force
     --with-hepmc3=$PREFIX \
     --with-fastjet=$PREFIX \
     --with-fjcontrib=$PREFIX \
+    --with-hdf5=$PREFIX \
+    --with-highfive=$PREFIX \
     --with-zlib=$PREFIX \
     PYTHON=$PYTHON
 
