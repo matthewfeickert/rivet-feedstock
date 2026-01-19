@@ -47,6 +47,7 @@ requirements:
     - cython
     - hdf5
     - highfive
+    - zlib
   run:
     - python
     - hepmc3 >=3.2.6,<3.3.0
