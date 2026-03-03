@@ -14,12 +14,10 @@ source:
     - 0001-fix-Fix-Python-extension-build-for-modern-Python-3.1.patch
     - 0002-fix-Replace-shell-ls-with-make-wildcard-in-analyses-.patch
     - 0003-fix-Use-C-linker-for-libRivet-convenience-library-ag.patch
-    - 0004-fix-Remove-install_name_tool-calls-on-core.so-in-pye.patch
-    - 0005-fix-Replace-AC_CHECK_FILE-with-shell-test-for-cross-.patch
-    - 0006-fix-Drop-rpath-no-from-fastjet-config-invocation.patch
-    - 0007-fix-Accept-path-values-for-with-highfive-configure-o.patch
-    - 0008-fix-Replace-possessive-quantifiers-in-make-plots-reg.patch
-    - 0009-fix-Add-rpath-to-build-tree-for-local-core.so-on-mac.patch
+    - 0004-fix-Replace-AC_CHECK_FILE-with-shell-test-for-cross-.patch
+    - 0005-fix-Drop-rpath-no-from-fastjet-config-invocation.patch
+    - 0006-fix-Accept-path-values-for-with-highfive-configure-o.patch
+    - 0007-fix-Replace-possessive-quantifiers-in-make-plots-reg.patch
 
 build:
   number: 0
