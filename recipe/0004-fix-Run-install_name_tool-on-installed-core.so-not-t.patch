@@ -1,0 +1,30 @@
+From 1d2db54fcbe255d26566ebdfe9ba8579d706ea02 Mon Sep 17 00:00:00 2001
+From: Chris Burr <christopher.burr@cern.ch>
+Date: Tue, 3 Mar 2026 11:41:15 +0100
+Subject: [PATCH 4/5] fix: Run install_name_tool on installed core.so, not the
+ build copy
+
+The install-exec-local target copies core.so to the destination then
+runs install_name_tool on the build copy instead of the installed copy.
+This leaves the installed core.so with an absolute reference to the
+build tree libRivet.dylib which does not exist after installation.
+---
+ pyext/Makefile.am | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/pyext/Makefile.am b/pyext/Makefile.am
+index 76a776dfc..880c51d89 100644
+--- a/pyext/Makefile.am
++++ b/pyext/Makefile.am
+@@ -28,7 +28,7 @@ install-exec-local: build/rivet/core.so
+ 	install_name_tool -change \
+          $(abs_top_srcdir)/src/.libs/libRivet.dylib \
+          $(libdir)/libRivet.dylib \
+-         $(abs_builddir)/build/rivet/core.so
++         $(DESTDIR)$(RIVET_PYTHONPATH)/rivet/core.so
+ 
+ else
+ 
+-- 
+2.39.5 (Apple Git-154)
+
