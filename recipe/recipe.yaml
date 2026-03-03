@@ -112,6 +112,7 @@ tests:
       run:
         - ${{ compiler('cxx') }}
         - hepmc3
+        - highfive
         - zlib
     files:
       source:
@@ -120,7 +121,7 @@ tests:
         - test/testMath.cc
         - test/testMatVec.cc
         - test/testNaN.cc
-        - test/testApi.hepmc
+        - test/testAPI.hepmc
     script:
       - $CXX test/testBeams.cc -o testBeams $CXXFLAGS $LDFLAGS -lRivet
       - ./testBeams
@@ -132,7 +133,7 @@ tests:
       - ./testMatVec
       - cd test
       - $CXX testNaN.cc -o testNaN $CXXFLAGS $LDFLAGS -lm -lz -lHepMC3 -lYODA -lRivet
-      - ./testNaN testApi.hepmc
+      - ./testNaN testAPI.hepmc
 
 about:
   license: GPL-3.0-only
