@@ -16,6 +16,8 @@ cxx_compiler_version:
 - '19'
 hdf5:
 - 1.14.6
+hepmc3:
+- '3.3'
 macos_machine:
 - x86_64-apple-darwin13.4.0
 pin_run_as_build:

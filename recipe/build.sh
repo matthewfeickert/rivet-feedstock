@@ -19,7 +19,7 @@ autoreconf --install --force
     --with-hepmc3=$PREFIX \
     --with-fastjet=$PREFIX \
     --with-fjcontrib=$PREFIX \
-    --with-hdf5=$PREFIX \
+    --with-hdf5=$PREFIX/bin/h5cc \
     --with-highfive=$PREFIX \
     --with-zlib=$PREFIX \
     PYTHON=$PYTHON

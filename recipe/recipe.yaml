@@ -16,6 +16,9 @@ source:
     - 0003-fix-Use-C-linker-for-libRivet-convenience-library-ag.patch
     - 0004-fix-Run-install_name_tool-on-installed-core.so-not-t.patch
     - 0005-fix-Replace-AC_CHECK_FILE-with-shell-test-for-cross-.patch
+    - 0006-fix-Drop-rpath-no-from-fastjet-config-invocation.patch
+    - 0007-fix-Accept-path-values-for-with-highfive-configure-o.patch
+    - 0008-fix-Replace-possessive-quantifiers-in-make-plots-reg.patch
 
 build:
   number: 0
@@ -42,24 +45,18 @@ requirements:
     - gawk
   host:
     - python
-    - hepmc3 >=3.2.6,<3.3.0
-    - yoda >=2.0.0
+    - hepmc3
+    - yoda
     - fastjet-contrib
-    # FIXME: Determine change in FastJet API in v3.5.0+ and create patch
-    - fastjet-cxx <3.5.0
+    - fastjet-cxx
     - cython
     - hdf5
     - highfive
     - zlib
   run:
     - python
-    - hepmc3 >=3.2.6,<3.3.0
-    - yoda >=2.0.0
-    - fastjet-contrib
-    # FIXME: Determine change in FastJet API in v3.5.0+ and create patch
-    - fastjet-cxx <3.5.0
-    - hdf5
-    - highfive
+    # This can be removed when run_exports is added to yoda
+    - ${{ pin_compatible('yoda', upper_bound='x.x') }}
     - matplotlib-base
     - requests
 
@@ -97,15 +94,7 @@ tests:
         - etc/bash_completion.d/rivet-completion
         - etc/conda/test-files/**/*
         - share/Rivet/**/*
-  - files:
-      source:
-        - test/testBeams.cc
-        - test/testCmp.cc
-        - test/testMath.cc
-        - test/testMatVec.cc
-        - test/testNaN.cc
-        - test/testApi.hepmc
-    script:
+  - script:
       - rivet-config --help
       - rivet-build --help
       - rivet-which --help
@@ -119,7 +108,20 @@ tests:
       - rivet --help
       - make-plots --help
       - rivet-mkvaldir --help
-
+  - requirements:
+      run:
+        - ${{ compiler('cxx') }}
+        - hepmc3
+        - zlib
+    files:
+      source:
+        - test/testBeams.cc
+        - test/testCmp.cc
+        - test/testMath.cc
+        - test/testMatVec.cc
+        - test/testNaN.cc
+        - test/testApi.hepmc
+    script:
       - $CXX test/testBeams.cc -o testBeams $CXXFLAGS $LDFLAGS -lRivet
       - ./testBeams
       - $CXX test/testCmp.cc -o testCmp $CXXFLAGS $LDFLAGS -lRivet
@@ -129,7 +131,7 @@ tests:
       - $CXX test/testMatVec.cc -o testMatVec $CXXFLAGS $LDFLAGS -lRivet
       - ./testMatVec
       - cd test
-      - $CXX testNaN.cc -o testNaN $CXXFLAGS $LDFLAGS -lm -lHepMC3 -lRivet
+      - $CXX testNaN.cc -o testNaN $CXXFLAGS $LDFLAGS -lm -lz -lHepMC3 -lYODA -lRivet
       - ./testNaN testApi.hepmc
 
 about:

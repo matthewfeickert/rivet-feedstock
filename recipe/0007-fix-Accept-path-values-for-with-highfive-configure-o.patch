@@ -1,0 +1,47 @@
+From 26725f3bf268e040b23bebdb14ffd404616c2e10 Mon Sep 17 00:00:00 2001
+From: Chris Burr <christopher.burr@cern.ch>
+Date: Tue, 3 Mar 2026 13:45:50 +0100
+Subject: [PATCH] fix: Accept path values for --with-highfive configure option
+
+When --with-highfive=$PREFIX is passed, the variable is set to the
+path, not "yes". The AC_ARG_WITH inside AX_LIB_HDF5 normalizes this,
+but it's inside the if-block that already failed the "xyes" check.
+Change all three checks to != "xno" so paths are accepted.
+---
+ configure.ac | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index e5f6a3e1d..299073e0f 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -234,7 +234,7 @@ CPPFLAGS=$oldCPPFLAGS
+ LIBS=$oldLIBS
+ 
+ ## HDF5 + highfive
+-if test "x$with_highfive" = "xyes"; then
++if test "x$with_highfive" != "xno" -a "x$with_highfive" != "x"; then
+   AX_LIB_HDF5()
+   if test x$HDF5_TYPE == xparallel; then
+     AX_PROG_CXX_MPI([true], [], [AC_MSG_ERROR([Found hdf5-parallel, but no MPI compiler.])])
+@@ -248,7 +248,7 @@ if test "x$with_highfive" = "xyes"; then
+ else
+   AC_MSG_NOTICE([Not building extra HighFive compatibility tools])
+ fi
+-AM_CONDITIONAL(ENABLE_HIGHFIVE, [test x$with_highfive = xyes])
++AM_CONDITIONAL(ENABLE_HIGHFIVE, [test x$with_highfive != xno -a x$with_highfive != x])
+ 
+ ## HEPTopTagger
+ # AC_CEDAR_HEADERS([HEPTopTagger], , , [AC_MSG_ERROR([HEPTopTagger is required])])
+@@ -395,7 +395,7 @@ AM_CPPFLAGS="$AM_CPPFLAGS \$(RIVETCPPFLAGS)"
+ AM_CPPFLAGS="$AM_CPPFLAGS \$(YODACPPFLAGS)"
+ AM_CPPFLAGS="$AM_CPPFLAGS -I\$(HEPMC3INCPATH)"
+ AM_CPPFLAGS="$AM_CPPFLAGS \$(FASTJETCPPFLAGS) \$(FJCONTRIBCPPFLAGS)"
+-if test "x$with_highfive" = "xyes"; then
++if test "x$with_highfive" != "xno" -a "x$with_highfive" != "x"; then
+   AM_CPPFLAGS="$AM_CPPFLAGS \$(HDF5_CPPFLAGS) \$(HIGHFIVECPPFLAGS)"
+ fi
+ AC_CEDAR_CHECKCXXFLAG([-pedantic], [AM_CXXFLAGS="$AM_CXXFLAGS -pedantic"])
+-- 
+2.39.5 (Apple Git-154)
+
