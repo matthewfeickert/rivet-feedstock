@@ -1,21 +1,24 @@
-From 6cd45907bc7228b0145057f0597adc833c6a74c1 Mon Sep 17 00:00:00 2001
+From c623ce74b47c908482800bdab93272a03ca4da27 Mon Sep 17 00:00:00 2001
 From: Chris Burr <christopher.burr@cern.ch>
-Date: Tue, 3 Mar 2026 11:31:01 +0100
-Subject: [PATCH 1/5] fix: Fix Python extension build for modern Python (3.13+)
+Date: Tue, 3 Mar 2026 21:01:55 +0100
+Subject: [PATCH] fix: Fix Python extension build for modern Python (3.12+)
 
-- Make libpython linkage optional since modern Python does not require
-  extension modules to link against libpython. On macOS, pass
-  -undefined dynamic_lookup to defer symbol resolution to runtime.
+- Do not link extension modules against libpython on any platform.
+  Python symbols are resolved at runtime from the interpreter. Linking
+  libpython directly causes duplicate PyModuleDef_Type symbols which
+  breaks PEP 489 multi-phase module initialization, resulting in
+  "initialization of core did not return an extension module".
+  On macOS, use -undefined dynamic_lookup for deferred symbol resolution.
 - Use sysconfig.get_path('include') instead of
   sysconfig.get_config_var('INCLUDEPY') to find Python headers, as the
   latter returns the stale build-time path which may not match the
   actual install prefix.
 ---
- pyext/build.py.in | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ pyext/build.py.in | 23 +++++++----------------
+ 1 file changed, 7 insertions(+), 16 deletions(-)
 
 diff --git a/pyext/build.py.in b/pyext/build.py.in
-index a15b706a6..83e42a7b0 100644
+index a15b706a6..d688f260a 100644
 --- a/pyext/build.py.in
 +++ b/pyext/build.py.in
 @@ -27,7 +27,7 @@ incargs = " ".join("-I{}".format(d) for d in incdirs)
@@ -27,31 +30,36 @@ index a15b706a6..83e42a7b0 100644
  
  ## Compile args
  cmpargs = "@PYEXT_CXXFLAGS@"
-@@ -60,7 +60,7 @@ libargs += " @HDF5_LIBS@"
+@@ -60,23 +60,14 @@ libargs += " @HDF5_LIBS@"
  # print("\n")
  
  ## Python compile/link args
 -pyargs = "-I" + sysconfig.get_config_var("INCLUDEPY")
-+pyargs = "-I" + sysconfig.get_path("include")
- libpys = [os.path.join(sysconfig.get_config_var(ld), sysconfig.get_config_var("LDLIBRARY")) for ld in ["LIBPL", "LIBDIR"]]
- libpys.extend( glob(os.path.join(sysconfig.get_config_var("LIBPL"), "libpython*.*")) )
- libpys.extend( glob(os.path.join(sysconfig.get_config_var("LIBDIR"), "libpython*.*")) )
-@@ -70,10 +70,12 @@ for lp in libpys:
-         libpy = lp
-         break
- if libpy is None:
+-libpys = [os.path.join(sysconfig.get_config_var(ld), sysconfig.get_config_var("LDLIBRARY")) for ld in ["LIBPL", "LIBDIR"]]
+-libpys.extend( glob(os.path.join(sysconfig.get_config_var("LIBPL"), "libpython*.*")) )
+-libpys.extend( glob(os.path.join(sysconfig.get_config_var("LIBDIR"), "libpython*.*")) )
+-libpy = None
+-for lp in libpys:
+-    if os.path.exists(lp):
+-        libpy = lp
+-        break
+-if libpy is None:
 -    print("No libpython found in expected location exiting")
-+    print("No libpython found in expected locations, continuing without explicit libpython linkage")
-     print("Considered locations were:", libpys)
+-    print("Considered locations were:", libpys)
 -    sys.exit(1)
 -pyargs += " " + libpy
-+    if platform.system() == "Darwin":
-+        pyargs += " -undefined dynamic_lookup"
-+else:
-+    pyargs += " " + libpy
++## Do not link against libpython. Extension modules resolve Python
++## symbols at runtime from the interpreter. Linking libpython directly
++## can cause duplicate symbols and breaks PEP 489 multi-phase init.
++pyargs = "-I" + sysconfig.get_path("include")
++if platform.system() == "Darwin":
++    pyargs += " -undefined dynamic_lookup"
  pyargs += " " + sysconfig.get_config_var("LIBS")
  pyargs += " " + sysconfig.get_config_var("LIBM")
- #pyargs += " " + sysconfig.get_config_var("LINKFORSHARED")
+-#pyargs += " " + sysconfig.get_config_var("LINKFORSHARED")
+ 
+ 
+ ## Assemble the compile & link command
 -- 
 2.39.5 (Apple Git-154)
 

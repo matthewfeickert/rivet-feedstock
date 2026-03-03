@@ -1,15 +1,12 @@
-From 1bae23b8699cdcc1eed9bb4cf4d5092ec1e7de7f Mon Sep 17 00:00:00 2001
+From 815ec2cff4fb7926404ce9eb2689f61d194cb090 Mon Sep 17 00:00:00 2001
 From: Chris Burr <christopher.burr@cern.ch>
-Date: Tue, 3 Mar 2026 19:10:04 +0100
+Date: Tue, 3 Mar 2026 21:02:24 +0100
 Subject: [PATCH] fix: Remove install_name_tool calls and WITH_OSX conditional
 
 Remove the WITH_OSX conditional and install_name_tool calls from the
 pyext Makefile. The install_name_tool rewrites fail with cctools-port
 due to fake code signatures. Conda's binary relocation handles library
 path fixups for the installed package.
-
-Keep RIVET_LOCAL=1 so core.so links against the build tree during the
-build phase where libRivet is available.
 ---
  pyext/Makefile.am | 24 ------------------------
  1 file changed, 24 deletions(-)

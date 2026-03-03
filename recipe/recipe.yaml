@@ -19,6 +19,7 @@ source:
     - 0006-fix-Drop-rpath-no-from-fastjet-config-invocation.patch
     - 0007-fix-Accept-path-values-for-with-highfive-configure-o.patch
     - 0008-fix-Replace-possessive-quantifiers-in-make-plots-reg.patch
+    - 0009-fix-Set-Cython-module-name-for-multi-phase-init-comp.patch
 
 build:
   number: 0
