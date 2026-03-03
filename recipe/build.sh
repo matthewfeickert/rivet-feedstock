@@ -28,10 +28,7 @@ make --jobs="${CPU_COUNT}"
 
 # Skip ``make check`` when cross-compiling
 if [[ "${CONDA_BUILD_CROSS_COMPILATION:-}" != "1" || "${CROSSCOMPILING_EMULATOR:-}" != "" ]]; then
-  # The Python import tests (testImport.sh, testCmdLine.sh) fail on macOS CI
-  # due to code signing issues with cctools-port's install_name_tool. The
-  # conda package tests verify the installed module works correctly.
-  make check XFAIL_TESTS="testImport.sh testCmdLine.sh" || { cat test/test-suite.log; exit 1; }
+  make check || { cat test/test-suite.log; exit 1; }
 fi
 make install
 make clean
