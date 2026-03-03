@@ -1,6 +1,6 @@
-From c623ce74b47c908482800bdab93272a03ca4da27 Mon Sep 17 00:00:00 2001
+From 38d1a97cf59102380e66cdba7f761cc9745257a5 Mon Sep 17 00:00:00 2001
 From: Chris Burr <christopher.burr@cern.ch>
-Date: Tue, 3 Mar 2026 21:01:55 +0100
+Date: Wed, 4 Mar 2026 00:26:40 +0100
 Subject: [PATCH] fix: Fix Python extension build for modern Python (3.12+)
 
 - Do not link extension modules against libpython on any platform.
@@ -13,9 +13,12 @@ Subject: [PATCH] fix: Fix Python extension build for modern Python (3.12+)
   sysconfig.get_config_var('INCLUDEPY') to find Python headers, as the
   latter returns the stale build-time path which may not match the
   actual install prefix.
+- Pass --module-name rivet.core to Cython so the generated PyModuleDef
+  has the correct fully qualified name for PEP 489 multi-phase init.
 ---
- pyext/build.py.in | 23 +++++++----------------
- 1 file changed, 7 insertions(+), 16 deletions(-)
+ pyext/build.py.in       | 23 +++++++----------------
+ pyext/rivet/Makefile.am |  1 +
+ 2 files changed, 8 insertions(+), 16 deletions(-)
 
 diff --git a/pyext/build.py.in b/pyext/build.py.in
 index a15b706a6..d688f260a 100644
@@ -60,6 +63,18 @@ index a15b706a6..d688f260a 100644
  
  
  ## Assemble the compile & link command
+diff --git a/pyext/rivet/Makefile.am b/pyext/rivet/Makefile.am
+index 3bab16f69..bff4045db 100644
+--- a/pyext/rivet/Makefile.am
++++ b/pyext/rivet/Makefile.am
+@@ -17,6 +17,7 @@ if WITH_CYTHON
+ RIVETINCLUDE = $(top_srcdir)/include/Rivet/
+ core.cpp: core.pyx rivet.pxd $(RIVETINCLUDE)/Analysis.hh $(RIVETINCLUDE)/AnalysisHandler.hh $(RIVETINCLUDE)/AnalysisLoader.hh $(RIVETINCLUDE)/Run.hh $(RIVETINCLUDE)/Tools/ProjectionTreePlotter.hh
+ 	$(CYTHON) $(srcdir)/core.pyx --cplus -2 \
++	   --module-name rivet.core \
+ 	   -I $(srcdir) -I $(srcdir)/include \
+ 	   -I $(builddir) -I $(builddir)/include \
+ 	   -o $@
 -- 
 2.39.5 (Apple Git-154)
 
