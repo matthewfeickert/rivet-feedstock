@@ -19,6 +19,8 @@ autoreconf --install --force
     --with-hepmc3=$PREFIX \
     --with-fastjet=$PREFIX \
     --with-fjcontrib=$PREFIX \
+    --with-hdf5=$PREFIX/bin/h5cc \
+    --with-highfive=$PREFIX \
     --with-zlib=$PREFIX \
     PYTHON=$PYTHON
 
@@ -26,7 +28,7 @@ make --jobs="${CPU_COUNT}"
 
 # Skip ``make check`` when cross-compiling
 if [[ "${CONDA_BUILD_CROSS_COMPILATION:-}" != "1" || "${CROSSCOMPILING_EMULATOR:-}" != "" ]]; then
-  make check
+  make check || { cat test/test-suite.log; exit 1; }
 fi
 make install
 make clean

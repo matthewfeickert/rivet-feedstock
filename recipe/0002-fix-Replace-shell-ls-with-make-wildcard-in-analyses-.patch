@@ -1,0 +1,38 @@
+From c888d5a142e1faa58c014eb14b54c7dd76e08dd9 Mon Sep 17 00:00:00 2001
+From: Chris Burr <christopher.burr@cern.ch>
+Date: Tue, 3 Mar 2026 11:41:00 +0100
+Subject: [PATCH 2/5] fix: Replace shell ls with make wildcard in analyses
+ Makefile
+
+The ls commands exceed ARG_MAX due to the large number of analysis data
+files. Use make's built-in wildcard function instead which does not
+spawn a shell process.
+---
+ analyses/Makefile.am | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/analyses/Makefile.am b/analyses/Makefile.am
+index 6737e67a4..0479c9739 100644
+--- a/analyses/Makefile.am
++++ b/analyses/Makefile.am
+@@ -1,7 +1,7 @@
+ AUTOMAKE_OPTIONS = -Wno-portability
+ SHELL := bash -O extglob
+ 
+-PLUGIN_DIRS = $(shell ls -d $(srcdir)/plugin*)
++PLUGIN_DIRS = $(wildcard $(srcdir)/plugin*)
+ PLUGIN_NAMES_ALL = $(notdir $(subst plugin,,$(PLUGIN_DIRS)))
+ FILTER_DISABLED =
+ if !ENABLE_ONNX
+@@ -12,7 +12,7 @@ endif
+ #endif
+ PLUGIN_NAMES = $(filter-out $(FILTER_DISABLED),$(PLUGIN_NAMES_ALL))
+ PLUGIN_LIBS = $(patsubst %,Rivet%Analyses.so,$(PLUGIN_NAMES))
+-PLUGIN_DATAFILES = $(shell ls $(abs_srcdir)/plugin*/*.*)
++PLUGIN_DATAFILES = $(wildcard $(abs_srcdir)/plugin*/*.*)
+ 
+ CLEANFILES = $(PLUGIN_LIBS) data
+ EXTRA_DIST = $(PLUGIN_DIRS) examples
+-- 
+2.39.5 (Apple Git-154)
+
