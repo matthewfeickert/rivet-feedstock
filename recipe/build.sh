@@ -30,3 +30,12 @@ if [[ "${CONDA_BUILD_CROSS_COMPILATION:-}" != "1" || "${CROSSCOMPILING_EMULATOR:
 fi
 make install
 make clean
+
+# Shell completions
+# Bash completions
+mkdir -p "${PREFIX}"/share/bash-completion/completions
+cp ./bin/rivet-completion "${PREFIX}"/share/bash-completion/completions/rivet
+
+# ZSH completions
+mkdir -p "${PREFIX}"/share/zsh/site-functions
+cp ./bin/rivet-completion "${PREFIX}"/share/zsh/site-functions/_rivet
