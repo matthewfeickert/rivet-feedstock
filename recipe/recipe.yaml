@@ -1,7 +1,7 @@
 schema_version: 1
 
 context:
-  version: "4.0.3"
+  version: "4.1.2"
 
 package:
   name: rivet
@@ -9,7 +9,7 @@ package:
 
 source:
   url: https://gitlab.com/hepcedar/rivet/-/archive/rivet-${{ version }}/rivet-rivet-${{ version }}.tar.gz
-  sha256: d9ec75cd0b04de3e63cb19ff9968903f38d81629045a7573a5eddfb97e5e2904
+  sha256: ce1f8f7cc5ca63fbcfbab79abe8c2295d18d1d5e1e935027f314d69a12463517
   patches:
     - 0001-fix-Fix-Python-extension-build-for-modern-Python-3.1.patch
     - 0002-fix-Replace-shell-ls-with-make-wildcard-in-analyses-.patch
@@ -17,9 +17,8 @@ source:
     - 0004-fix-Remove-install_name_tool-calls-and-WITH_OSX-cond.patch
     - 0005-fix-Replace-AC_CHECK_FILE-with-shell-test-for-cross-.patch
     - 0006-fix-Drop-rpath-no-from-fastjet-config-invocation.patch
-    - 0007-fix-Accept-path-values-for-with-highfive-configure-o.patch
-    - 0008-fix-Replace-possessive-quantifiers-in-make-plots-reg.patch
-    - 0009-fix-Skip-Python-import-tests-when-building-in-conda.patch
+    - 0007-fix-Replace-possessive-quantifiers-in-make-plots-reg.patch
+    - 0008-fix-Skip-Python-import-tests-when-building-in-conda.patch
 
 build:
   number: 0
@@ -51,8 +50,6 @@ requirements:
     - fastjet-contrib
     - fastjet-cxx
     - cython
-    - hdf5
-    - highfive
     - zlib
   run:
     - python
@@ -62,10 +59,6 @@ requirements:
     - requests
 
 tests:
-  - python:
-      imports:
-        - rivet
-      pip_check: false
   - package_contents:
       strict: true
       bin:
@@ -79,10 +72,10 @@ tests:
         - rivet-findid
         - rivet-merge
         - rivet-mkanalysis
+        - rivet-mkhepdata
         - rivet-mkhtml
         - rivet-mkhtml-tex
         - rivet-mkvaldir
-        - rivet-which
       lib:
         - libRivet
       include:
@@ -95,10 +88,14 @@ tests:
         - etc/bash_completion.d/rivet-completion
         - etc/conda/test-files/**/*
         - share/Rivet/**/*
+        - share/bash-completion/completions/rivet
+        - share/zsh/site-functions/_rivet
+
+  # Separate script section from one _with_ requirements to validate without
+  # additional requirements
   - script:
       - rivet-config --help
       - rivet-build --help
-      - rivet-which --help
       - rivet-mkhtml --help
       - rivet-mkanalysis --help
       - rivet-merge --help
@@ -109,11 +106,16 @@ tests:
       - rivet --help
       - make-plots --help
       - rivet-mkvaldir --help
+
+  - python:
+      imports:
+        - rivet
+      pip_check: false
+
   - requirements:
       run:
         - ${{ compiler('cxx') }}
         - hepmc3
-        - highfive
         - zlib
     files:
       source:

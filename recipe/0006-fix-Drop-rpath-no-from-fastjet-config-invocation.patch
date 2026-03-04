@@ -1,4 +1,4 @@
-From f5ed374e3437891d1a8f4090bb90621af3a0f516 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Chris Burr <christopher.burr@cern.ch>
 Date: Tue, 3 Mar 2026 13:18:58 +0100
 Subject: [PATCH] fix: Drop --rpath=no from fastjet-config invocation
@@ -12,18 +12,18 @@ handles rpaths independently, this flag is unnecessary.
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/configure.ac b/configure.ac
-index a2a4449d7..e5f6a3e1d 100644
+index 1234567..abcdefg 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -167,7 +167,7 @@ if test -f "$FJCONFIG"; then
-   if test "$fjmajor" -lt 3 -o "$fjminor" -lt 2 ; then  #< only works for v3.x
+@@ -205,7 +205,7 @@
      AC_MSG_ERROR([FastJet version 3.2.0 or later is required])
    fi
--  FASTJETLIBADD="$($FJCONFIG --libs --plugins --rpath=no)"
-+  FASTJETLIBADD="$($FJCONFIG --libs --plugins)"
+   # Only keep -l flags (library names)
+-  FASTJETLIBADD=`echo "$($FJCONFIG --libs --plugins --rpath=no)" | tr ' ' '\n' | grep '^-l' | tr '\n' ' '`
++  FASTJETLIBADD=`echo "$($FJCONFIG --libs --plugins)" | tr ' ' '\n' | grep '^-l' | tr '\n' ' '`
  else
-   FASTJETLIBADD="-L$FASTJETLIBPATH -l$FASTJETLIBNAME -lfastjetplugins"
+   FASTJETLIBADD="-l$FASTJETLIBNAME -lfastjetplugins"
  fi
--- 
+--
 2.39.5 (Apple Git-154)
 

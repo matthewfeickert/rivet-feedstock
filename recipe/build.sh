@@ -19,8 +19,6 @@ autoreconf --install --force
     --with-hepmc3=$PREFIX \
     --with-fastjet=$PREFIX \
     --with-fjcontrib=$PREFIX \
-    --with-hdf5=$PREFIX/bin/h5cc \
-    --with-highfive=$PREFIX \
     --with-zlib=$PREFIX \
     PYTHON=$PYTHON
 
@@ -32,3 +30,12 @@ if [[ "${CONDA_BUILD_CROSS_COMPILATION:-}" != "1" || "${CROSSCOMPILING_EMULATOR:
 fi
 make install
 make clean
+
+# Shell completions
+# Bash completions
+mkdir -p "${PREFIX}"/share/bash-completion/completions
+cp ./bin/rivet-completion "${PREFIX}"/share/bash-completion/completions/rivet
+
+# ZSH completions
+mkdir -p "${PREFIX}"/share/zsh/site-functions
+cp ./bin/rivet-completion "${PREFIX}"/share/zsh/site-functions/_rivet
