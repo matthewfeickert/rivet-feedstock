@@ -16,7 +16,9 @@ source:
     - 0003-fix-Use-C-linker-for-libRivet-convenience-library-ag.patch
     - 0004-fix-Remove-install_name_tool-calls-and-WITH_OSX-cond.patch
     - 0005-fix-Replace-AC_CHECK_FILE-with-shell-test-for-cross-.patch
-    - 0006-fix-Skip-Python-import-tests-when-building-in-conda.patch
+    - 0006-fix-Drop-rpath-no-from-fastjet-config-invocation.patch
+    - 0007-fix-Replace-possessive-quantifiers-in-make-plots-reg.patch
+    - 0008-fix-Skip-Python-import-tests-when-building-in-conda.patch
 
 build:
   number: 0
