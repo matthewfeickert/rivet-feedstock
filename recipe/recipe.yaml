@@ -76,10 +76,10 @@ tests:
         - rivet-findid
         - rivet-merge
         - rivet-mkanalysis
+        - rivet-mkhepdata
         - rivet-mkhtml
         - rivet-mkhtml-tex
         - rivet-mkvaldir
-        - rivet-which
       lib:
         - libRivet
       include:
@@ -95,7 +95,6 @@ tests:
   - script:
       - rivet-config --help
       - rivet-build --help
-      - rivet-which --help
       - rivet-mkhtml --help
       - rivet-mkanalysis --help
       - rivet-merge --help
