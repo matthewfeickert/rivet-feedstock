@@ -1,7 +1,7 @@
 schema_version: 1
 
 context:
-  version: "4.1.2"
+  version: "4.1.3"
 
 package:
   name: rivet
@@ -9,7 +9,7 @@ package:
 
 source:
   url: https://gitlab.com/hepcedar/rivet/-/archive/rivet-${{ version }}/rivet-rivet-${{ version }}.tar.gz
-  sha256: ce1f8f7cc5ca63fbcfbab79abe8c2295d18d1d5e1e935027f314d69a12463517
+  sha256: c21b69307d62136f7395c3f80cfe3b792693efef917551f1e3a30720c474e204
   patches:
     - 0001-fix-Fix-Python-extension-build-for-modern-Python-3.1.patch
     - 0002-fix-Replace-shell-ls-with-make-wildcard-in-analyses-.patch
