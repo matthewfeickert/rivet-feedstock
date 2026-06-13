@@ -21,19 +21,21 @@ source:
     - 0008-fix-Skip-Python-import-tests-when-building-in-conda.patch
 
 build:
-  number: 0
+  number: 1
   skip:
     - win
 
 requirements:
+  run_exports:
+    - ${{ pin_subpackage("rivet", upper_bound="x.x") }}
   build:
     - if: build_platform != target_platform
       then:
         - python
         - cross-python_${{ target_platform }}
         - cython
-    - ${{ stdlib('c') }}
-    - ${{ compiler('cxx') }}
+    - ${{ stdlib("c") }}
+    - ${{ compiler("cxx") }}
     - automake
     - libtool
     - make
@@ -53,8 +55,6 @@ requirements:
     - zlib
   run:
     - python
-    # This can be removed when run_exports is added to yoda
-    - ${{ pin_compatible('yoda', upper_bound='x.x') }}
     - matplotlib-base
     - requests
 
@@ -77,7 +77,7 @@ tests:
         - rivet-mkhtml-tex
         - rivet-mkvaldir
       lib:
-        - libRivet
+        - Rivet
       include:
         - Rivet/**/*
       site_packages:
@@ -114,7 +114,7 @@ tests:
 
   - requirements:
       run:
-        - ${{ compiler('cxx') }}
+        - ${{ compiler("cxx") }}
         - hepmc3
         - zlib
     files:
