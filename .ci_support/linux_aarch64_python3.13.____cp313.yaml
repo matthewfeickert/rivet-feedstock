@@ -12,6 +12,10 @@ cxx_compiler_version:
 - '14'
 docker_image:
 - quay.io/condaforge/linux-anvil-aarch64:alma9
+fastjet_contrib:
+- '1.103'
+fastjet_cxx:
+- '3.5'
 hepmc3:
 - '3.3'
 pin_run_as_build:
@@ -22,5 +26,7 @@ python:
 - 3.13.* *_cp313
 target_platform:
 - linux-aarch64
+yoda:
+- '2.1'
 zlib:
 - '1'
