@@ -124,7 +124,7 @@ tests:
 
   - requirements:
       run:
-        - ${{ compiler("cxx") }}
+        - cxx-compiler
     files:
       source:
         - test/testBeams.cc
@@ -134,6 +134,14 @@ tests:
         - test/testNaN.cc
         - test/testAPI.hepmc
     script:
+      # Set end-user environmental variables from rivet-config
+      - export CXX="$(rivet-config --cxx)"
+      - export CXXFLAGS="$(rivet-config --cxxflags)"
+      - export LDFLAGS="$(rivet-config --ldflags)"
+      - echo "CXX=${CXX}"
+      - echo "CXXFLAGS=${CXXFLAGS}"
+      - echo "LDFLAGS=${LDFLAGS}"
+
       - $CXX test/testBeams.cc -o testBeams $CXXFLAGS $LDFLAGS -lRivet
       - ./testBeams
       - $CXX test/testCmp.cc -o testCmp $CXXFLAGS $LDFLAGS -lRivet
