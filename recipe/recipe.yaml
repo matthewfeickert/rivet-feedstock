@@ -57,6 +57,10 @@ requirements:
     - python
     - matplotlib-base
     - requests
+    # Rivet's public header RivetHepMC.hh defines HEPMC3_Z_SUPPORT for
+    # HepMC3>=3.3, so compiling an analysis against the installed headers
+    # (e.g. with rivet-build) requires zlib.h at runtime
+    - zlib
 
 tests:
   - package_contents:
@@ -121,8 +125,6 @@ tests:
   - requirements:
       run:
         - ${{ compiler("cxx") }}
-        - hepmc3
-        - zlib
     files:
       source:
         - test/testBeams.cc
