@@ -21,7 +21,7 @@ source:
     - 0008-fix-Skip-Python-import-tests-when-building-in-conda.patch
 
 build:
-  number: 2
+  number: 3
   skip:
     - win
 
@@ -92,8 +92,11 @@ tests:
         - share/zsh/site-functions/_rivet
 
   # Separate script section from one _with_ requirements to validate without
-  # additional requirements
-  - script:
+  # additional library or compiler requirements
+  - requirements:
+      run:
+        - grep
+    script:
       - rivet-config --help
       - rivet-build --help
       - rivet-mkhtml --help
@@ -106,6 +109,9 @@ tests:
       - rivet --help
       - make-plots --help
       - rivet-mkvaldir --help
+      # Ensure no build machine paths leak into the compiler wrapper scripts
+      - if grep -E 'build_env|prefix-map' "${CONDA_PREFIX}/bin/rivet-build"; then exit 1; fi
+      - if grep -E 'build_env|prefix-map' "${CONDA_PREFIX}/bin/rivet-config"; then exit 1; fi
 
   - python:
       imports:
