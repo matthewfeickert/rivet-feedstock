@@ -21,7 +21,7 @@ source:
     - 0008-fix-Skip-Python-import-tests-when-building-in-conda.patch
 
 build:
-  number: 2
+  number: 3
   skip:
     - win
 
@@ -57,6 +57,10 @@ requirements:
     - python
     - matplotlib-base
     - requests
+    # Rivet's public header RivetHepMC.hh defines HEPMC3_Z_SUPPORT for
+    # HepMC3>=3.3, so compiling an analysis against the installed headers
+    # (e.g. with rivet-build) requires zlib.h at runtime
+    - zlib
 
 tests:
   - package_contents:
@@ -92,8 +96,11 @@ tests:
         - share/zsh/site-functions/_rivet
 
   # Separate script section from one _with_ requirements to validate without
-  # additional requirements
-  - script:
+  # additional library or compiler requirements
+  - requirements:
+      run:
+        - grep
+    script:
       - rivet-config --help
       - rivet-build --help
       - rivet-mkhtml --help
@@ -106,6 +113,9 @@ tests:
       - rivet --help
       - make-plots --help
       - rivet-mkvaldir --help
+      # Ensure no build machine paths leak into the compiler wrapper scripts
+      - if grep -E 'build_env|prefix-map' "${CONDA_PREFIX}/bin/rivet-build"; then exit 1; fi
+      - if grep -E 'build_env|prefix-map' "${CONDA_PREFIX}/bin/rivet-config"; then exit 1; fi
 
   - python:
       imports:
@@ -114,9 +124,7 @@ tests:
 
   - requirements:
       run:
-        - ${{ compiler("cxx") }}
-        - hepmc3
-        - zlib
+        - cxx-compiler
     files:
       source:
         - test/testBeams.cc
@@ -126,6 +134,14 @@ tests:
         - test/testNaN.cc
         - test/testAPI.hepmc
     script:
+      # Set end-user environmental variables from rivet-config
+      - export CXX="$(rivet-config --cxx)"
+      - export CXXFLAGS="$(rivet-config --cxxflags)"
+      - export LDFLAGS="$(rivet-config --ldflags)"
+      - echo "CXX=${CXX}"
+      - echo "CXXFLAGS=${CXXFLAGS}"
+      - echo "LDFLAGS=${LDFLAGS}"
+
       - $CXX test/testBeams.cc -o testBeams $CXXFLAGS $LDFLAGS -lRivet
       - ./testBeams
       - $CXX test/testCmp.cc -o testCmp $CXXFLAGS $LDFLAGS -lRivet
